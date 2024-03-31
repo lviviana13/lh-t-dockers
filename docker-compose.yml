@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  jupyter:
+      build: ../jupyter
+      restart: unless-stopped
+      ports:
+        - 8888:8888
+      entrypoint:
+        jupyter lab --ip='0.0.0.0' --port 8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+      env_file: 
+        - /Users/labautista/acc/acc-local/data-analysis/jupyter/variables.env
+  postgres:
+    image: postgis/postgis:16-3.4
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - DATABASE_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: "no"
+    ports:
+      - 80:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    depends_on:
+      - postgres
+
+
